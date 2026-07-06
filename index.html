@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path of Exile 2 - บริการรับจ้าง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kanit', 'sans-serif'],
+                    },
+                    colors: {
+                        poe: {
+                            dark: '#1a1a1a',
+                            panel: '#2d2d30',
+                            border: '#5c5c5c',
+                            gold: '#f0b543',
+                            blue: '#4a90e2',
+                            red: '#e24a4a',
+                            text: '#d4d4d4',
+                            title: '#e0c080'
+                        }
+                    },
+                    backgroundImage: {
+                        'stone-pattern': "url('https://www.transparenttextures.com/patterns/black-scales.png')", // Fallback texture
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0f11;
+            background-image: radial-gradient(circle at 50% 0%, #2a2a35 0%, #0f0f11 60%);
+            color: #d4d4d4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .poe-border {
+            border: 2px solid #5c5c5c;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .poe-border::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border: 1px solid rgba(224, 192, 128, 0.3);
+            pointer-events: none;
+        }
+
+        .service-card {
+            background: linear-gradient(180deg, #2a2a35 0%, #1a1a24 100%);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.9), 0 0 15px rgba(224, 192, 128, 0.2);
+            border-color: #8c7a56;
+        }
+
+        .title-plate {
+            background: linear-gradient(90deg, transparent 0%, rgba(42,42,53,0.8) 20%, rgba(42,42,53,0.8) 80%, transparent 100%);
+            border-top: 1px solid #5c5c5c;
+            border-bottom: 1px solid #5c5c5c;
+        }
+
+        /* Editor Modal Styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .editable-field {
+            cursor: pointer;
+            position: relative;
+            border: 1px dashed transparent;
+            transition: border-color 0.2s;
+        }
+
+        .editable-field:hover {
+            border-color: #f0b543;
+            background-color: rgba(240, 181, 67, 0.1);
+        }
+
+        .editable-field::after {
+            content: '\f040'; /* FontAwesome edit icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #f0b543;
+            color: #1a1a1a;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .editable-field:hover::after {
+            opacity: 1;
+        }
+
+        .edit-mode-active .editable-field {
+            border-color: #5c5c5c;
+        }
+
+        textarea.editor-input {
+            width: 100%;
+            min-height: 150px;
+            background-color: #1a1a1a;
+            color: #d4d4d4;
+            border: 1px solid #5c5c5c;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Kanit', sans-serif;
+            resize: vertical;
+        }
+
+        textarea.editor-input:focus {
+            outline: none;
+            border-color: #f0b543;
+        }
+    </style>
+</head>
+<body class="bg-stone-pattern">
+
+    <!-- Admin Toggle Button (Top Right) -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="toggleEditBtn" onclick="toggleEditMode()" class="bg-poe-panel border border-poe-border text-poe-text px-4 py-2 rounded hover:bg-gray-700 hover:text-white transition flex items-center gap-2 shadow-lg">
+            <i class="fas fa-lock"></i>
+            <span>โหมดผู้ชม</span>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 flex-grow flex flex-col items-center justify-center max-w-6xl">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8 relative w-full">
+            <!-- Decorative Fire/Ice Elements (Simplified via CSS/Images) -->
+            <div class="absolute top-0 left-0 w-32 h-64 bg-poe-red opacity-20 blur-3xl rounded-full mix-blend-screen pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-32 h-64 bg-poe-blue opacity-20 blur-3xl rounded-full mix-blend-screen pointer-events-none"></div>
+
+            <!-- Logo Area (Placeholder) -->
+            <div class="mb-4 relative z-10 flex flex-col items-center justify-center">
+                 <h1 class="text-5xl md:text-6xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-gray-200 to-gray-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]" style="font-family: serif;">PATH OF EXILE</h1>
+                 <h2 class="text-xl md:text-2xl font-serif text-poe-gold tracking-widest mt-2 uppercase">Return of the Ancients</h2>
+            </div>
+
+            <!-- Main Title Plate -->
+            <div class="title-plate py-4 px-8 inline-block mx-auto mt-6 relative z-10 w-full max-w-3xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-poe-title uppercase tracking-wide drop-shadow-md editable-field" onclick="openEditor('mainTitle')" id="mainTitle-display">
+                    บริการรับจ้าง (POE 2 Services)
+                </h2>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full relative z-10">
+            
+            <!-- Service 1 -->
+            <div class="poe-border service-card rounded p-1 flex flex-col h-full cursor-pointer group" onclick="openDetailView(1)">
+                <!-- Inner Container -->
+                <div class="border border-gray-700 h-full p-4 flex flex-col bg-[#1e1e24] bg-opacity-80 relative overflow-hidden">
+                    <!-- Hover Effect Overlay -->
+                    <div class="absolute inset-0 bg-poe-gold/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    
+                    <!-- Service Title (Preview - Not editable here, editable in detail view) -->
+                    <div class="text-center border-b border-gray-700 pb-3 mb-4" id="title1-preview">
+                        <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Service Details (Preview) -->
+                    <div class="flex-grow text-gray-300 text-lg leading-relaxed p-2" id="desc1-preview">
+                        <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Click Indicator -->
+                    <div class="mt-4 text-center text-xs text-poe-gold/70 uppercase tracking-widest font-semibold group-hover:text-poe-gold transition-colors">
+                        คลิกดูรายละเอียด <i class="fas fa-chevron-right ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="poe-border service-card rounded p-1 flex flex-col h-full cursor-pointer group" onclick="openDetailView(2)">
+                <!-- Inner Container -->
+                <div class="border border-gray-700 h-full p-4 flex flex-col bg-[#1e1e24] bg-opacity-80 relative overflow-hidden">
+                    <!-- Hover Effect Overlay -->
+                    <div class="absolute inset-0 bg-poe-blue/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    
+                    <!-- Service Title -->
+                    <div class="text-center border-b border-gray-700 pb-3 mb-4" id="title2-preview">
+                         <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Service Details / Image -->
+                    <div class="flex-grow flex items-center justify-center p-2" id="desc2-preview">
+                        <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Click Indicator -->
+                    <div class="mt-4 text-center text-xs text-blue-400/70 uppercase tracking-widest font-semibold group-hover:text-blue-400 transition-colors">
+                        คลิกดูรายละเอียด <i class="fas fa-chevron-right ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="poe-border service-card rounded p-1 flex flex-col h-full cursor-pointer group" onclick="openDetailView(3)">
+                <!-- Inner Container -->
+                <div class="border border-gray-700 h-full p-4 flex flex-col bg-[#1e1e24] bg-opacity-80 relative overflow-hidden">
+                    <!-- Hover Effect Overlay -->
+                    <div class="absolute inset-0 bg-poe-red/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    
+                    <!-- Service Title -->
+                    <div class="text-center border-b border-gray-700 pb-3 mb-4" id="title3-preview">
+                         <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Service Details / Icons -->
+                    <div class="flex-grow flex flex-col items-center justify-center p-2" id="desc3-preview">
+                         <!-- Content synced via JS -->
+                    </div>
+                    
+                    <!-- Click Indicator -->
+                    <div class="mt-4 text-center text-xs text-poe-red/70 uppercase tracking-widest font-semibold group-hover:text-poe-red transition-colors">
+                        คลิกดูรายละเอียด <i class="fas fa-chevron-right ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Merchant ID Footer -->
+        <div class="mt-12 text-center relative z-10 w-full max-w-md">
+             <div class="bg-black/60 border border-poe-border py-3 px-8 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.8)] flex items-center justify-center gap-4 mx-auto">
+                 <span class="text-poe-gold text-2xl font-bold">รหัสพ่อค้า :</span>
+                 <span class="text-cyan-400 text-3xl font-bold tracking-wider editable-field" onclick="openEditor('merchantId')" id="merchantId-display">5050</span>
+             </div>
+        </div>
+        
+    </div>
+
+    <!-- Detail View Modal -->
+    <div id="detailModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center modal-overlay p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#1a1a24] border-2 border-poe-border rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col relative">
+            
+            <!-- Close Button (Absolute) -->
+            <button onclick="closeDetailView()" class="absolute top-4 right-4 z-10 text-gray-400 hover:text-white transition bg-black/50 rounded-full w-8 h-8 flex items-center justify-center border border-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <!-- Decorative Header -->
+            <div class="h-32 bg-cover bg-center relative" style="background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#1a1a24]"></div>
+                <!-- Color indicator line -->
+                <div id="detailColorLine" class="absolute top-0 left-0 right-0 h-1 bg-poe-gold shadow-[0_0_10px_currentColor]"></div>
+            </div>
+
+            <div class="px-8 pb-8 -mt-12 relative z-10">
+                <!-- Editable Detail Title -->
+                <div class="text-center mb-8 editable-field inline-block bg-[#1a1a24] px-6 py-2 rounded-lg border border-gray-700 shadow-lg mx-auto" onclick="openEditor('detailTitle')" id="detailTitle-display">
+                    <!-- Title injected here -->
+                </div>
+
+                <!-- Editable Detail Content -->
+                <div class="bg-black/40 border border-gray-800 rounded p-6 shadow-inner editable-field min-h-[200px]" onclick="openEditor('detailContent')" id="detailContent-display">
+                    <!-- Extensive details injected here -->
+                </div>
+                
+                <div class="mt-8 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
+                    <i class="fas fa-info-circle"></i> 
+                    <span id="detailEditHint">หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าด้านล่าง</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal (HTML Editor) -->
+    <div id="editModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center modal-overlay p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-poe-panel border-2 border-poe-border rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="bg-gray-900 px-6 py-4 border-b border-gray-700 flex justify-between items-center shadow-md">
+                <h3 class="text-xl font-bold text-poe-gold flex items-center gap-2" id="modalTitle">
+                    <i class="fas fa-edit text-sm"></i> แก้ไขข้อมูล
+                </h3>
+                <button onclick="closeEditor()" class="text-gray-400 hover:text-white transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 flex-grow bg-[#222226]">
+                <div class="flex justify-between items-center mb-2">
+                    <p class="text-sm text-gray-400"><i class="fab fa-html5 text-orange-500 mr-1"></i> HTML Editor Mode (รองรับการใส่ Tag ตกแต่ง)</p>
+                    <div class="text-xs text-gray-500 flex gap-2">
+                        <button onclick="insertTag('<b>', '</b>')" class="hover:text-poe-gold transition px-2 py-1 bg-gray-800 rounded"><b>B</b></button>
+                        <button onclick="insertTag('<i>', '</i>')" class="hover:text-poe-gold transition px-2 py-1 bg-gray-800 rounded"><i>I</i></button>
+                        <button onclick="insertTag('<br>', '')" class="hover:text-poe-gold transition px-2 py-1 bg-gray-800 rounded">&lt;br&gt;</button>
+                        <button onclick="insertTag('<span class=\'text-poe-gold\'>', '</span>')" class="hover:text-poe-gold transition px-2 py-1 bg-gray-800 rounded text-poe-gold">Gold</button>
+                    </div>
+                </div>
+                <textarea id="editorTextarea" class="editor-input shadow-inner font-mono text-sm leading-relaxed"></textarea>
+                <input type="hidden" id="currentEditKey">
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="bg-gray-900 px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+                <button onclick="closeEditor()" class="px-5 py-2 border border-gray-600 rounded text-gray-300 hover:bg-gray-700 transition">
+                    ยกเลิก
+                </button>
+                <button onclick="saveEdit()" class="px-6 py-2 bg-poe-gold text-black font-bold rounded hover:bg-yellow-500 transition shadow-[0_0_15px_rgba(240,181,67,0.4)] flex items-center gap-2">
+                    <i class="fas fa-save"></i> บันทึกข้อมูล
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default data structure - Updated with detailed views
+        const defaultData = {
+            mainTitle: 'บริการรับจ้าง (POE 2 SERVICES)',
+            
+            // Preview Data (shown on main grid)
+            title1: '<h3 class="text-xl md:text-2xl font-bold text-poe-gold">1. รับวิ่ง Act 1 - 4<br>& Interlude 1-3</h3>',
+            desc1: '<ul class="list-none space-y-2">\n    <li>- เลเวล 60+</li>\n    <li>- พลังวิญญาณ 100</li>\n    <li>- เก็บครบหมดทุกเควส</li>\n</ul>',
+            
+            title2: '<h3 class="text-xl md:text-2xl font-bold text-blue-400">2. รับปลดแต้ม 1-8</h3>',
+            desc2: '<div class="text-center text-gray-400">\n    <div class="w-32 h-40 bg-gray-800 border-2 border-blue-500/50 rounded shadow-[0_0_15px_rgba(59,130,246,0.3)] mx-auto flex items-center justify-center transform rotate-6 hover:rotate-0 transition-transform mb-4">\n        <i class="fas fa-book-journal-whills text-4xl text-blue-400"></i>\n    </div>\n    <ul class="text-left text-gray-300 space-y-2 mt-4 text-sm">\n        <li></li>\n    </ul>\n</div>',
+            
+            title3: '<h3 class="text-xl md:text-2xl font-bold text-poe-red">3. รับจัดบิ้ว<br>ตามงบราคา</h3>',
+            desc3: '<div class="flex justify-center gap-6 mb-4">\n    <div class="text-poe-gold text-5xl drop-shadow-md">\n        <i class="fas fa-coins"></i>\n    </div>\n    <div class="text-gray-400 text-5xl drop-shadow-md border-2 border-gray-500 rounded-lg p-2 bg-gray-800/50">\n        <i class="fas fa-cogs"></i>\n    </div>\n</div>\n<ul class="text-left text-gray-300 space-y-2 mt-4 text-sm">\n    <li></li>\n</ul>',
+            
+            // Detailed View Data (Shown in Modal)
+            detailTitle1: '<h2 class="text-3xl font-bold text-poe-gold">รายละเอียดบริการ: วิ่ง Act 1 - 4 & Interlude</h2>',
+            detailContent1: '<div class="space-y-4 text-lg text-gray-300">\n  <p><b class="text-poe-gold">รายละเอียดที่ท่านจะได้รับ:</b></p>\n  <ul class="list-disc pl-6 space-y-2">\n    <li>ตัวละครเลเวล 60 ขึ้นไป การันตี</li>\n    <li>พลังวิญญาณ (Spirit) 100 หน่วยเต็ม</li>\n    <li>ทำเควสเนื้อเรื่อง (Campaign) ครบทุก Act (1-4) และ Interlude (1-3)</li>\n    <li>ปลดล็อค Waypoint สำคัญครบถ้วน</li>\n    <li>ของดรอประหว่างทาง มอบคืนให้ลูกค้าทั้งหมด (ยกเว้นขยะ)</li>\n  </ul>\n  <br>\n  <p><b class="text-poe-gold">ระยะเวลาดำเนินการ:</b> ประมาณ 2-4 ชั่วโมง (ขึ้นอยู่กับคิว)</p>\n  <p><b class="text-poe-gold">สิ่งที่ต้องเตรียม:</b></p>\n  <ul class="list-disc pl-6 space-y-2">\n    <li>ไอดีและพาสเวิร์ด (รับประกันความปลอดภัย 100%)</li>\n    <li>ไม่ต้องเตรียมของสวมใส่ เราจัดการให้</li>\n  </ul>\n</div>',
+
+            detailTitle2: '<h2 class="text-3xl font-bold text-blue-400">รายละเอียดบริการ: ปลดแต้ม Skill Points 1-8</h2>',
+            detailContent2: '<div class="space-y-4 text-lg text-gray-300">\n  <div class="flex justify-center mb-6">\n    <i class="fas fa-book-journal-whills text-6xl text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]"></i>\n  </div>\n  <p><b class="text-blue-400">รายละเอียดการปลดแต้ม:</b></p>\n  <p>บริการวิ่งเคลียร์เควสรอง (Side Quests) ที่ให้รางวัลเป็น Passive Skill Points เพื่อให้ตัวละครของท่านแข็งแกร่งที่สุดในระดับเลเวลนั้นๆ</p>\n  <ul class="list-disc pl-6 space-y-2 mt-4">\n    <li>รับประกันได้ครบทั้ง 8 แต้ม (หรือตามที่ขาด)</li>\n    <li>ใช้เวลาไม่นาน รวดเร็ว ปลอดภัย</li>\n    <li>ไม่ต้องให้รหัสผ่าน สามารถปาร์ตี้เดินตามได้ (หรือให้เราล็อกอินเล่นให้ก็ได้)</li>\n  </ul>\n  <br>\n  <p><b class="text-blue-400">เงื่อนไข:</b> ตัวละครต้องผ่าน Act ที่กำหนดของแต่ละเควสแล้ว</p>\n</div>',
+
+            detailTitle3: '<h2 class="text-3xl font-bold text-poe-red">รายละเอียดบริการ: จัดบิ้วตามงบประมาณ</h2>',
+            detailContent3: '<div class="space-y-4 text-lg text-gray-300">\n  <p><b class="text-poe-red">เปลี่ยนตัวละครของคุณให้เทพ ในงบที่คุณกำหนดได้!</b></p>\n  <p>ไม่ว่าคุณอยากจะเล่นสายอะไร ตีใกล้, เวทมนตร์, ซัมมอน หรือสายฟาร์มไว เราพร้อมให้คำปรึกษาและจัดหาไอเทมให้ตรงตามความต้องการ</p>\n  <br>\n  <ul class="list-disc pl-6 space-y-3">\n    <li><b class="text-poe-gold">ให้คำปรึกษาฟรี:</b> พูดคุยสไตล์การเล่นที่ชอบ เพื่อหาบิ้วที่ใช่</li>\n    <li><b class="text-poe-gold">จัดหาไอเทม:</b> เราหาซื้อของสวมใส่ (Gear), อาวุธ, เพชร (Gems) ให้ครบเซ็ต</li>\n    <li><b class="text-poe-gold">เซ็ตอัพตัวละคร:</b> อัพ Passive Tree และตั้งค่าสกิลให้พร้อมลุยทันที</li>\n    <li><b class="text-poe-gold">รับประกันความพึงพอใจ:</b> สอนคอมโบพื้นฐานและการเอาตัวรอดของบิ้วนั้นๆ</li>\n  </ul>\n  <br>\n  <div class="bg-gray-800 p-4 border border-gray-600 rounded text-center">\n      <p>เริ่มต้นเพียง <b>10 Divine Orbs</b> ก็สามารถฟาร์มสบายๆ ได้แล้ว!</p>\n  </div>\n</div>',
+
+            merchantId: '5050'
+        };
+
+        // Current application state
+        let siteData = {};
+        let isEditMode = false;
+        let currentActiveDetailId = null; // Keeps track of which detail view is open
+
+        // Initialize application
+        function init() {
+            loadData();
+            renderAll();
+            updateEditModeUI();
+        }
+
+        // Load data from LocalStorage or use defaults
+        function loadData() {
+            const saved = localStorage.getItem('poeServiceDataV2');
+            if (saved) {
+                try {
+                    siteData = JSON.parse(saved);
+                    // Merge with default in case new fields were added
+                    siteData = { ...defaultData, ...siteData }; 
+                } catch (e) {
+                    console.error("Error parsing saved data", e);
+                    siteData = { ...defaultData };
+                }
+            } else {
+                siteData = { ...defaultData };
+            }
+        }
+
+        // Save data to LocalStorage
+        function saveData() {
+            localStorage.setItem('poeServiceDataV2', JSON.stringify(siteData));
+        }
+
+        // Render all fields to the DOM
+        function renderAll() {
+            // Render Main Title
+            if(document.getElementById('mainTitle-display')) {
+                document.getElementById('mainTitle-display').innerHTML = siteData.mainTitle;
+            }
+
+            // Render Preview Cards (Syncing data to previews)
+            for(let i=1; i<=3; i++) {
+                if(document.getElementById(`title${i}-preview`)) {
+                    document.getElementById(`title${i}-preview`).innerHTML = siteData[`title${i}`];
+                }
+                if(document.getElementById(`desc${i}-preview`)) {
+                    document.getElementById(`desc${i}-preview`).innerHTML = siteData[`desc${i}`];
+                }
+            }
+
+            // Render Merchant ID
+            if(document.getElementById('merchantId-display')) {
+                document.getElementById('merchantId-display').innerHTML = siteData.merchantId;
+            }
+
+            // If detail view is open, re-render it
+            if(currentActiveDetailId !== null) {
+                document.getElementById('detailTitle-display').innerHTML = siteData[`detailTitle${currentActiveDetailId}`];
+                document.getElementById('detailContent-display').innerHTML = siteData[`detailContent${currentActiveDetailId}`];
+            }
+        }
+
+        // Toggle Edit/View Mode
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            updateEditModeUI();
+        }
+
+        function updateEditModeUI() {
+            const btn = document.getElementById('toggleEditBtn');
+            const body = document.body;
+            
+            if (isEditMode) {
+                btn.innerHTML = '<i class="fas fa-unlock text-poe-gold"></i><span class="text-poe-gold">โหมดแก้ไข (เปิดใช้งานอยู่)</span>';
+                btn.classList.add('border-poe-gold');
+                body.classList.add('edit-mode-active');
+                
+                // Show edit hints in detail view
+                const hint = document.getElementById('detailEditHint');
+                if(hint) hint.innerHTML = "<span class='text-poe-gold'>[โหมดแก้ไข] คลิกที่ข้อความด้านบนเพื่อแก้ไขรายละเอียด</span>";
+                
+            } else {
+                btn.innerHTML = '<i class="fas fa-lock"></i><span>โหมดผู้ชมทั่วไป</span>';
+                btn.classList.remove('border-poe-gold');
+                body.classList.remove('edit-mode-active');
+                
+                // Reset edit hints
+                const hint = document.getElementById('detailEditHint');
+                if(hint) hint.innerHTML = "หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าด้านล่าง";
+            }
+        }
+
+        // --- Detail View Logic ---
+
+        function openDetailView(id) {
+            // If in edit mode, prevent opening detail view from the main cards so user doesn't accidentally click. 
+            // Actually, we want them to click to open detail, then edit inside detail.
+            // But we also need them to be able to edit the *preview* text. 
+            // Let's make it so clicking opens the detail view in BOTH modes.
+            
+            currentActiveDetailId = id;
+            
+            // Set dynamic colors based on ID
+            const colorLine = document.getElementById('detailColorLine');
+            if(id === 1) { colorLine.className = "absolute top-0 left-0 right-0 h-1 bg-poe-gold shadow-[0_0_15px_#f0b543]"; }
+            else if(id === 2) { colorLine.className = "absolute top-0 left-0 right-0 h-1 bg-blue-500 shadow-[0_0_15px_#3b82f6]"; }
+            else if(id === 3) { colorLine.className = "absolute top-0 left-0 right-0 h-1 bg-poe-red shadow-[0_0_15px_#e24a4a]"; }
+
+            // Render content for specific ID
+            document.getElementById('detailTitle-display').innerHTML = siteData[`detailTitle${id}`];
+            document.getElementById('detailContent-display').innerHTML = siteData[`detailContent${id}`];
+
+            // Show Modal
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('hidden');
+            // Small timeout to allow display block to apply before changing opacity for transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeDetailView() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.add('opacity-0');
+            
+            // Wait for transition before hiding
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                currentActiveDetailId = null;
+            }, 300);
+        }
+
+        // --- Editor Logic ---
+
+        function openEditor(keyContext) {
+            if (!isEditMode) return; // Only open if in edit mode
+            
+            // Prevent event bubbling if clicking inside a card that also opens detail view
+            if(event) event.stopPropagation(); 
+
+            let actualKey = keyContext;
+            
+            // Map context to actual data keys if we are inside a detail view
+            if (keyContext === 'detailTitle' && currentActiveDetailId !== null) {
+                actualKey = `detailTitle${currentActiveDetailId}`;
+            } else if (keyContext === 'detailContent' && currentActiveDetailId !== null) {
+                actualKey = `detailContent${currentActiveDetailId}`;
+            }
+            
+            // We can also allow editing the preview cards directly if needed, but for now we focus on detail view and main titles
+            // To allow editing preview texts, we would add editable-field class to them and map them here.
+
+            const modal = document.getElementById('editModal');
+            const textarea = document.getElementById('editorTextarea');
+            const keyInput = document.getElementById('currentEditKey');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Set titles based on what we are editing
+            let titleText = '<i class="fas fa-edit text-sm"></i> แก้ไขข้อมูล';
+            if(actualKey === 'mainTitle') titleText = "แก้ไขหัวข้อหลัก";
+            else if(actualKey.includes('detailTitle')) titleText = `แก้ไขหัวข้อย่อยบริการที่ ${currentActiveDetailId}`;
+            else if(actualKey.includes('detailContent')) titleText = `แก้ไขรายละเอียดเชิงลึกบริการที่ ${currentActiveDetailId}`;
+            else if(actualKey === 'merchantId') titleText = "แก้ไขรหัสพ่อค้า";
+            else titleText = `แก้ไข: ${actualKey}`;
+            
+            modalTitle.innerHTML = titleText;
+
+            textarea.value = siteData[actualKey] || '';
+            keyInput.value = actualKey;
+
+            // Make sure detail modal is visually below edit modal
+            if(currentActiveDetailId !== null) {
+                 document.getElementById('detailModal').style.zIndex = '50';
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            textarea.focus();
+        }
+
+        function closeEditor() {
+            const modal = document.getElementById('editModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // Restore z-index of detail modal
+                if(currentActiveDetailId !== null) {
+                     document.getElementById('detailModal').style.zIndex = '60';
+                }
+            }, 300);
+        }
+
+        function saveEdit() {
+            const key = document.getElementById('currentEditKey').value;
+            const content = document.getElementById('editorTextarea').value;
+            
+            if (key) {
+                siteData[key] = content;
+                saveData();
+                renderAll();
+                closeEditor();
+                
+                // Show a brief success indicator on the edited element
+                let displayElId = `${key}-display`;
+                
+                // Handle dynamic IDs for detail view
+                if(key.includes('detailTitle')) displayElId = 'detailTitle-display';
+                if(key.includes('detailContent')) displayElId = 'detailContent-display';
+                
+                const displayEl = document.getElementById(displayElId);
+                if(displayEl) {
+                    displayEl.classList.add('bg-green-900/50', 'transition-colors', 'duration-300');
+                    setTimeout(() => {
+                        displayEl.classList.remove('bg-green-900/50');
+                    }, 800);
+                }
+            }
+        }
+
+        // Helper for HTML editor buttons
+        function insertTag(openTag, closeTag) {
+            const textarea = document.getElementById('editorTextarea');
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(startPos, endPos);
+            
+            const replacement = openTag + selectedText + closeTag;
+            textarea.value = textarea.value.substring(0, startPos) + replacement + textarea.value.substring(endPos);
+            
+            // Reset cursor
+            textarea.focus();
+            if(selectedText.length === 0 && closeTag.length > 0) {
+                 // Place cursor inside empty tags
+                textarea.selectionStart = startPos + openTag.length;
+                textarea.selectionEnd = startPos + openTag.length;
+            } else {
+                 // Place cursor after inserted tags
+                 textarea.selectionStart = startPos + replacement.length;
+                 textarea.selectionEnd = startPos + replacement.length;
+            }
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditor();
+        });
+        
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this && !isEditMode) closeDetailView();
+            // In edit mode, clicking outside shouldn't close detail view easily to prevent accidents while editing
+            if (e.target === this && isEditMode) {
+                 if(confirm('ต้องการปิดหน้าต่างรายละเอียดหรือไม่? (ข้อมูลที่ยังไม่บันทึกจะหายไป)')) {
+                     closeDetailView();
+                 }
+            }
+        });
+
+        // Run on load
+        window.onload = init;
+    </script>
+</body>
+</html>
