@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Path of Exile 2 - บริการรับจ้าง</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ใช้ฟอนต์ Kanit เพียงตัวเดียวสำหรับทุกส่วน -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -29,9 +28,6 @@
                             text_muted: '#8a8a9e'
                         }
                     },
-                    backgroundImage: {
-                        'texture': "url('https://www.transparenttextures.com/patterns/dark-matter.png')",
-                    },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
@@ -50,7 +46,7 @@
     <style>
         body {
             background-color: #07070a;
-            /* เปลี่ยนพื้นหลังให้ดูลึกขึ้นและใช้ลาย Dark Matter */
+            /* พื้นหลังลาย Dark Matter และ Radial Gradient */
             background-image: 
                 radial-gradient(ellipse at 50% 0%, rgba(45, 45, 60, 0.3) 0%, transparent 70%),
                 url('https://www.transparenttextures.com/patterns/dark-matter.png');
@@ -123,74 +119,10 @@
             color: #d4af37; font-size: 14px; opacity: 0.5;
         }
 
-        /* Editor Modal Styles */
+        /* Modal Overlay */
         .modal-overlay {
             background-color: rgba(5, 5, 8, 0.9);
             backdrop-filter: blur(8px);
-        }
-
-        .editable-field {
-            cursor: pointer;
-            position: relative;
-            border: 1px dashed transparent;
-            transition: all 0.2s;
-            border-radius: 4px;
-        }
-
-        .editable-field:hover {
-            border-color: #d4af37;
-            background-color: rgba(212, 175, 55, 0.05);
-        }
-
-        .editable-field::after {
-            content: '\f040'; /* FontAwesome edit icon */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            top: -12px;
-            right: -12px;
-            background: linear-gradient(135deg, #d4af37, #8a7322);
-            color: #000;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
-        }
-
-        .editable-field:hover::after {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .edit-mode-active .editable-field {
-            border-color: rgba(212, 175, 55, 0.3);
-        }
-
-        textarea.editor-input {
-            width: 100%;
-            min-height: 200px;
-            background-color: rgba(10, 10, 15, 0.8);
-            color: #e0e0e0;
-            border: 1px solid #3f3f4e;
-            padding: 16px;
-            border-radius: 8px;
-            font-family: 'Kanit', sans-serif;
-            resize: vertical;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        textarea.editor-input:focus {
-            outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) inset;
         }
 
         /* Subtle atmospheric lights */
@@ -199,9 +131,8 @@
         .ambient-light-gold { background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 60%); }
     </style>
 </head>
-<body class="bg-texture selection:bg-poe-gold selection:text-black">
+<body class="selection:bg-poe-gold selection:text-black">
 
-    <!-- Ambient Background Effects -->
     <div class="fixed top-0 left-0 w-[800px] h-[800px] ambient-light-red -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"></div>
     <div class="fixed top-0 right-0 w-[800px] h-[800px] ambient-light-blue translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"></div>
     <div class="fixed bottom-0 left-1/2 w-[1000px] h-[600px] ambient-light-gold -translate-x-1/2 translate-y-1/2 pointer-events-none z-0"></div>
@@ -222,7 +153,7 @@
 
             <!-- Main Title Plate -->
             <div class="title-plate py-5 px-12 inline-block mx-auto mt-4 z-10 w-full max-w-2xl rounded-sm backdrop-blur-sm">
-                <h2 class="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider drop-shadow-lg editable-field" onclick="openEditor('mainTitle')" id="mainTitle-display">
+                <h2 class="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider drop-shadow-lg">
                     บริการรับจ้าง (POE 2 Services)
                 </h2>
             </div>
@@ -237,11 +168,15 @@
                 <div class="p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 text-9xl text-poe-gold opacity-[0.03] group-hover:opacity-[0.08] transition-opacity font-bold pointer-events-none">1</div>
                     
-                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10" id="title1-preview">
-                        <!-- Content synced via JS -->
+                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10">
+                        <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#f0e6d2] to-[#d4af37] tracking-wide">1. รับวิ่ง Act 1-4 <br>& Interlude 1-3</h3>
                     </div>
-                    <div class="flex-grow text-gray-300 text-lg leading-relaxed z-10" id="desc1-preview">
-                        <!-- Content synced via JS -->
+                    <div class="flex-grow text-gray-300 text-lg leading-relaxed z-10">
+                        <ul class="space-y-3 font-medium">
+                            <li class="flex items-center gap-3"><i class="fas fa-level-up-alt text-poe-gold text-sm w-5 text-center"></i> <span>เลเวล 60+</span></li>
+                            <li class="flex items-center gap-3"><i class="fas fa-ghost text-poe-blue text-sm w-5 text-center"></i> <span>พลังวิญญาณ 100</span></li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500/80 text-sm w-5 text-center"></i> <span class="text-gray-200">เก็บครบหมดทุกเควส</span></li>
+                        </ul>
                     </div>
                     <div class="mt-6 pt-4 border-t border-poe-border/30 text-center text-sm text-poe-gold/60 uppercase tracking-widest font-semibold group-hover:text-poe-gold transition-colors z-10">
                         รายละเอียดเพิ่มเติม <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
@@ -255,11 +190,14 @@
                 <div class="p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 text-9xl text-poe-blue opacity-[0.03] group-hover:opacity-[0.08] transition-opacity font-bold pointer-events-none">2</div>
 
-                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10" id="title2-preview">
-                         <!-- Content synced via JS -->
+                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10">
+                         <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#e6f0fa] to-[#4a90e2] tracking-wide">2. รับปลดแต้ม 1-8</h3>
                     </div>
-                    <div class="flex-grow flex flex-col items-center justify-center z-10 w-full" id="desc2-preview">
-                        <!-- Content synced via JS -->
+                    <div class="flex-grow flex flex-col items-center justify-center z-10 w-full">
+                        <div class="w-24 h-32 bg-gradient-to-br from-[#1a1a24] to-[#0a0a0f] border border-poe-blue/40 rounded-md shadow-[0_0_20px_rgba(74,144,226,0.2)] mx-auto flex items-center justify-center transform rotate-3 hover:rotate-0 hover:scale-110 transition-all duration-500 mb-6 group-hover:border-poe-blue/80">
+                            <i class="fas fa-book-journal-whills text-5xl text-poe-blue drop-shadow-[0_0_10px_rgba(74,144,226,0.8)]"></i>
+                        </div>
+                        <div class="text-center px-4"><span class="bg-poe-blue/10 text-poe-blue px-3 py-1 rounded-full text-sm font-medium border border-poe-blue/20">Skill Points</span></div>
                     </div>
                     <div class="mt-6 pt-4 border-t border-poe-border/30 text-center text-sm text-poe-blue/60 uppercase tracking-widest font-semibold group-hover:text-poe-blue transition-colors z-10">
                         รายละเอียดเพิ่มเติม <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
@@ -273,11 +211,22 @@
                 <div class="p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 text-9xl text-poe-red opacity-[0.03] group-hover:opacity-[0.08] transition-opacity font-bold pointer-events-none">3</div>
 
-                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10" id="title3-preview">
-                         <!-- Content synced via JS -->
+                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10">
+                         <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#fae6e6] to-[#cc3333] tracking-wide">3. รับจัดบิ้ว<br>ตามงบราคา</h3>
                     </div>
-                    <div class="flex-grow flex flex-col items-center justify-center z-10 w-full" id="desc3-preview">
-                         <!-- Content synced via JS -->
+                    <div class="flex-grow flex flex-col items-center justify-center z-10 w-full">
+                         <div class="flex justify-center items-center gap-6 mb-6">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-poe-gold/30 blur-md rounded-full"></div>
+                                <i class="fas fa-coins text-poe-gold text-5xl relative z-10 hover:scale-110 transition-transform"></i>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-600 text-sm"></i>
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-gray-500/30 blur-md rounded-full"></div>
+                                <i class="fas fa-cogs text-gray-300 text-5xl relative z-10 hover:scale-110 transition-transform hover:rotate-90 duration-500"></i>
+                            </div>
+                        </div>
+                        <div class="text-center px-4"><span class="bg-poe-red/10 text-poe-red px-3 py-1 rounded-full text-sm font-medium border border-poe-red/20">Custom Builds</span></div>
                     </div>
                     <div class="mt-6 pt-4 border-t border-poe-border/30 text-center text-sm text-poe-red/60 uppercase tracking-widest font-semibold group-hover:text-poe-red transition-colors z-10">
                         รายละเอียดเพิ่มเติม <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
@@ -295,7 +244,7 @@
                     <span class="text-poe-gold text-xl font-semibold tracking-wide">รหัสพ่อค้า :</span>
                 </div>
                 <div class="w-px h-8 bg-poe-border/60 mx-2"></div>
-                <span class="text-white text-3xl font-bold tracking-wider editable-field px-4 py-1" onclick="openEditor('merchantId')" id="merchantId-display">VIP - 5050</span>
+                <span class="text-white text-3xl font-bold tracking-wider px-4 py-1">VIP - 5050</span>
             </div>
         </div>
         
@@ -318,82 +267,29 @@
             </div>
 
             <div class="px-8 md:px-12 pb-12 -mt-16 relative z-10">
-                <!-- Editable Detail Title -->
+                <!-- Detail Title -->
                 <div class="text-center mb-10">
-                    <div class="editable-field inline-block bg-[#16161c] px-8 py-4 rounded-xl border border-gray-800 shadow-2xl backdrop-blur-md" onclick="openEditor('detailTitle')" id="detailTitle-display">
+                    <div class="inline-block bg-[#16161c] px-8 py-4 rounded-xl border border-gray-800 shadow-2xl backdrop-blur-md" id="detailTitle-display">
                         <!-- Title injected here -->
                     </div>
                 </div>
 
-                <!-- Editable Detail Content -->
-                <div class="bg-[#0a0a0c]/80 border border-gray-800/80 rounded-xl p-8 md:p-10 shadow-inner editable-field min-h-[250px]" onclick="openEditor('detailContent')" id="detailContent-display">
+                <!-- Detail Content -->
+                <div class="bg-[#0a0a0c]/80 border border-gray-800/80 rounded-xl p-8 md:p-10 shadow-inner min-h-[250px]" id="detailContent-display">
                     <!-- Extensive details injected here -->
                 </div>
                 
                 <div class="mt-8 pt-6 border-t border-gray-800/50 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
                     <i class="fas fa-info-circle"></i> 
-                    <span id="detailEditHint">หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าที่แสดงในหน้าหลัก</span>
+                    <span>หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าที่แสดงในหน้าหลัก</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Modal (HTML Editor) -->
-    <div id="editModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center modal-overlay p-4 opacity-0 transition-all duration-300">
-        <div class="glass-panel border border-poe-border rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.9)] w-full max-w-3xl overflow-hidden flex flex-col transform scale-95 transition-transform" id="editModalContent">
-            <!-- Modal Header -->
-            <div class="bg-black/40 px-6 py-5 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-poe-gold flex items-center gap-3" id="modalTitle">
-                    <i class="fas fa-pen-nib text-sm"></i> แก้ไขข้อมูล
-                </h3>
-                <button onclick="closeEditor()" class="text-gray-500 hover:text-white transition">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <!-- Modal Body -->
-            <div class="p-6 flex-grow bg-gradient-to-b from-[#111115] to-[#0a0a0c]">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-                    <p class="text-sm text-gray-400"><i class="fab fa-html5 text-orange-500 mr-2"></i> HTML Editor Mode</p>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="insertTag('<b>', '</b>')" class="hover:text-white hover:border-gray-500 transition px-3 py-1 bg-[#1a1a20] border border-gray-700 rounded text-sm text-gray-300"><b>B</b></button>
-                        <button onclick="insertTag('<i>', '</i>')" class="hover:text-white hover:border-gray-500 transition px-3 py-1 bg-[#1a1a20] border border-gray-700 rounded text-sm text-gray-300"><i>I</i></button>
-                        <button onclick="insertTag('<br>', '')" class="hover:text-white hover:border-gray-500 transition px-3 py-1 bg-[#1a1a20] border border-gray-700 rounded text-sm text-gray-300">&lt;br&gt;</button>
-                        <button onclick="insertTag('<span class=\'text-poe-gold\'>', '</span>')" class="hover:text-poe-gold hover:border-poe-gold transition px-3 py-1 bg-[#1a1a20] border border-gray-700 rounded text-sm text-poe-gold font-medium">Gold Text</button>
-                    </div>
-                </div>
-                <textarea id="editorTextarea" class="editor-input shadow-inner font-mono text-sm leading-relaxed"></textarea>
-                <input type="hidden" id="currentEditKey">
-            </div>
-            
-            <!-- Modal Footer -->
-            <div class="bg-black/40 px-6 py-4 border-t border-gray-800 flex justify-end gap-4">
-                <button onclick="closeEditor()" class="px-6 py-2.5 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
-                    ยกเลิก
-                </button>
-                <button onclick="saveEdit()" class="px-8 py-2.5 bg-gradient-to-r from-poe-gold to-poe-gold_dim text-black font-bold rounded-lg hover:from-yellow-400 hover:to-poe-gold transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center gap-2">
-                    <i class="fas fa-save"></i> บันทึกข้อมูล
-                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Updated Default Data with Kanit font-weight classes instead of serif
-        const defaultData = {
-            mainTitle: 'บริการรับจ้าง (POE 2 SERVICES)',
-            
-            // Preview Data (shown on main grid)
-            title1: '<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#f0e6d2] to-[#d4af37] tracking-wide">1. รับวิ่ง Act 1-4 <br>& Interlude 1-3</h3>',
-            desc1: '<ul class="space-y-3 font-medium">\n    <li class="flex items-center gap-3"><i class="fas fa-level-up-alt text-poe-gold text-sm w-5 text-center"></i> <span>เลเวล 60+</span></li>\n    <li class="flex items-center gap-3"><i class="fas fa-ghost text-poe-blue text-sm w-5 text-center"></i> <span>พลังวิญญาณ 100</span></li>\n    <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500/80 text-sm w-5 text-center"></i> <span class="text-gray-200">เก็บครบหมดทุกเควส</span></li>\n</ul>',
-            
-            title2: '<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#e6f0fa] to-[#4a90e2] tracking-wide">2. รับปลดแต้ม 1-8</h3>',
-            desc2: '<div class="w-24 h-32 bg-gradient-to-br from-[#1a1a24] to-[#0a0a0f] border border-poe-blue/40 rounded-md shadow-[0_0_20px_rgba(74,144,226,0.2)] mx-auto flex items-center justify-center transform rotate-3 hover:rotate-0 hover:scale-110 transition-all duration-500 mb-6 group-hover:border-poe-blue/80">\n    <i class="fas fa-book-journal-whills text-5xl text-poe-blue drop-shadow-[0_0_10px_rgba(74,144,226,0.8)]"></i>\n</div>\n<div class="text-center px-4"><span class="bg-poe-blue/10 text-poe-blue px-3 py-1 rounded-full text-sm font-medium border border-poe-blue/20">Skill Points</span></div>',
-            
-            title3: '<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#fae6e6] to-[#cc3333] tracking-wide">3. รับจัดบิ้ว<br>ตามงบราคา</h3>',
-            desc3: '<div class="flex justify-center items-center gap-6 mb-6">\n    <div class="relative">\n        <div class="absolute inset-0 bg-poe-gold/30 blur-md rounded-full"></div>\n        <i class="fas fa-coins text-poe-gold text-5xl relative z-10 hover:scale-110 transition-transform"></i>\n    </div>\n    <i class="fas fa-arrow-right text-gray-600 text-sm"></i>\n    <div class="relative">\n        <div class="absolute inset-0 bg-gray-500/30 blur-md rounded-full"></div>\n        <i class="fas fa-cogs text-gray-300 text-5xl relative z-10 hover:scale-110 transition-transform hover:rotate-90 duration-500"></i>\n    </div>\n</div>\n<div class="text-center px-4"><span class="bg-poe-red/10 text-poe-red px-3 py-1 rounded-full text-sm font-medium border border-poe-red/20">Custom Builds</span></div>',
-            
-            // Detailed View Data (Shown in Modal)
+        // Data for Detail Views
+        const siteData = {
             detailTitle1: '<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-gold to-yellow-200">รายละเอียด: วิ่ง Act 1 - 4 & Interlude</h2>',
             detailContent1: '<div class="space-y-6 text-lg text-gray-300 leading-relaxed">\n  <div class="bg-[#1a1a20] p-6 rounded-lg border border-gray-700/50">\n      <h3 class="text-poe-gold font-bold text-xl mb-4 flex items-center gap-2"><i class="fas fa-gift"></i> รายละเอียดที่ท่านจะได้รับ:</h3>\n      <ul class="space-y-3">\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ตัวละครเลเวล 60+</span></li>\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>พลังวิญญาณ (Spirit) 100</span></li>\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ทำเควสเนื้อเรื่อง (Campaign) ครบทุก Act (1-4) และ Interlude (1-3)</span></li>\n      </ul>\n  </div>\n  \n  <div class="flex items-center gap-3 text-gray-400 bg-black/30 p-4 rounded-lg border-l-4 border-gray-600">\n      <i class="far fa-clock text-xl"></i>\n      <p><b>ระยะเวลาดำเนินการ:</b> ประมาณ 3-5 ชั่วโมง</p>\n  </div>\n\n  <div class="bg-gradient-to-r from-[#2a2416] to-transparent p-6 rounded-lg border-l-4 border-poe-gold">\n      <h3 class="text-poe-gold font-bold text-xl mb-3">ค่าบริการ:</h3>\n      <ul class="space-y-2 font-medium">\n        <li class="flex justify-between max-w-xs"><span>• แบบเดินตาม</span> <span class="text-white">590 บาท</span></li>\n        <li class="flex justify-between max-w-xs"><span>• แบบฝากไอดี</span> <span class="text-white">890 บาท</span></li>\n      </ul>\n  </div>\n</div>',
 
@@ -401,95 +297,10 @@
             detailContent2: '<div class="space-y-6 text-lg text-gray-300">\n  <div class="flex justify-center mb-8 relative">\n    <div class="absolute inset-0 bg-poe-blue/20 blur-[50px] rounded-full w-32 h-32 mx-auto"></div>\n    <i class="fas fa-book-journal-whills text-7xl text-poe-blue relative z-10 drop-shadow-[0_0_15px_rgba(74,144,226,0.8)] animate-float"></i>\n  </div>\n  \n  <div class="bg-gradient-to-r from-[#162032] to-transparent p-6 rounded-lg border-l-4 border-poe-blue">\n      <h3 class="text-poe-blue font-bold text-xl mb-4">ค่าบริการ:</h3>\n      <div class="grid gap-4">\n        <div class="bg-black/40 p-4 rounded border border-gray-700 flex justify-between items-center">\n            <div>\n                <span class="text-white font-bold text-xl">20 บาท</span>\n                <p class="text-sm text-gray-400">ใช้เวลาวิ่ง 20 นาที +</p>\n            </div>\n            <i class="fas fa-walking text-2xl text-gray-500"></i>\n        </div>\n        <div class="bg-black/40 p-4 rounded border border-poe-blue/30 flex justify-between items-center">\n            <div>\n                <span class="text-white font-bold text-xl">40 บาท</span>\n                <p class="text-sm text-poe-blue">ใช้เวลาวิ่งด่วน 5 นาที!</p>\n            </div>\n            <i class="fas fa-bolt text-2xl text-poe-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"></i>\n        </div>\n      </div>\n  </div>\n  \n  <div class="bg-red-900/20 border border-red-900/50 p-5 rounded-lg flex gap-4 items-start">\n      <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>\n      <p class="text-sm"><b class="text-red-400">เงื่อนไขสำคัญ:</b> ตัวละครต้องผ่าน Act 2 และผ่านเควส <span class="text-white font-medium">"ทางผ่านผู้ทรยศ"</span> แล้ว จึงจะลงแต้ม 8 ได้</p>\n  </div>\n</div>',
 
             detailTitle3: '<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-red to-red-300">รายละเอียด: จัดบิ้วตามงบประมาณ</h2>',
-            detailContent3: '<div class="space-y-6 text-lg text-gray-300">\n  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-comments text-3xl text-poe-blue mb-3"></i>\n          <h4 class="font-bold text-white">ให้คำปรึกษา ฟรี</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-tools text-3xl text-poe-gold mb-3"></i>\n          <h4 class="font-bold text-white">รับแก้บิ้ว</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-shield-heart text-3xl text-poe-red mb-3"></i>\n          <h4 class="font-bold text-white">ดูแลตลอดการใช้งาน</h4>\n      </div>\n  </div>\n\n  <div class="bg-gradient-to-b from-[#2a1616] to-[#150b0b] p-8 border border-poe-red/30 rounded-xl text-center shadow-[0_0_30px_rgba(204,51,51,0.15)] relative overflow-hidden">\n      <div class="absolute -right-4 -bottom-4 text-poe-red/10 text-9xl"><i class="fas fa-fire"></i></div>\n      <h3 class="text-gray-400 mb-2 relative z-10">ค่าบริการเริ่มต้นเพียง</h3>\n      <div class="text-5xl font-bold text-white relative z-10 mb-2">300 <span class="text-2xl text-poe-gold">บาท</span></div>\n      <p class="text-sm text-poe-red/80 relative z-10">*ราคาอาจปรับเปลี่ยนตามความยากง่ายของงบและสายอาชีพ</p>\n  </div>\n</div>',
-
-            merchantId: 'VIP - 5050'
+            detailContent3: '<div class="space-y-6 text-lg text-gray-300">\n  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-comments text-3xl text-poe-blue mb-3"></i>\n          <h4 class="font-bold text-white">ให้คำปรึกษา ฟรี</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-tools text-3xl text-poe-gold mb-3"></i>\n          <h4 class="font-bold text-white">รับแก้บิ้ว</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-shield-heart text-3xl text-poe-red mb-3"></i>\n          <h4 class="font-bold text-white">ดูแลตลอดการใช้งาน</h4>\n      </div>\n  </div>\n\n  <div class="bg-gradient-to-b from-[#2a1616] to-[#150b0b] p-8 border border-poe-red/30 rounded-xl text-center shadow-[0_0_30px_rgba(204,51,51,0.15)] relative overflow-hidden">\n      <div class="absolute -right-4 -bottom-4 text-poe-red/10 text-9xl"><i class="fas fa-fire"></i></div>\n      <h3 class="text-gray-400 mb-2 relative z-10">ค่าบริการเริ่มต้นเพียง</h3>\n      <div class="text-5xl font-bold text-white relative z-10 mb-2">300 <span class="text-2xl text-poe-gold">บาท</span></div>\n      <p class="text-sm text-poe-red/80 relative z-10">*ราคาอาจปรับเปลี่ยนตามความยากง่ายของงบและสายอาชีพ</p>\n  </div>\n</div>'
         };
 
-        // Current application state
-        let siteData = {};
-        let isEditMode = false;
-        let currentActiveDetailId = null;
-
-        function init() {
-            loadData();
-            renderAll();
-            updateEditModeUI();
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem('poeServiceDataV3');
-            if (saved) {
-                try {
-                    siteData = JSON.parse(saved);
-                    siteData = { ...defaultData, ...siteData }; 
-                } catch (e) {
-                    console.error("Error parsing saved data", e);
-                    siteData = { ...defaultData };
-                }
-            } else {
-                siteData = { ...defaultData };
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('poeServiceDataV3', JSON.stringify(siteData));
-        }
-
-        function renderAll() {
-            if(document.getElementById('mainTitle-display')) {
-                document.getElementById('mainTitle-display').innerHTML = siteData.mainTitle;
-            }
-
-            for(let i=1; i<=3; i++) {
-                if(document.getElementById(`title${i}-preview`)) {
-                    document.getElementById(`title${i}-preview`).innerHTML = siteData[`title${i}`];
-                }
-                if(document.getElementById(`desc${i}-preview`)) {
-                    document.getElementById(`desc${i}-preview`).innerHTML = siteData[`desc${i}`];
-                }
-            }
-
-            if(document.getElementById('merchantId-display')) {
-                document.getElementById('merchantId-display').innerHTML = siteData.merchantId;
-            }
-
-            if(currentActiveDetailId !== null) {
-                document.getElementById('detailTitle-display').innerHTML = siteData[`detailTitle${currentActiveDetailId}`];
-                document.getElementById('detailContent-display').innerHTML = siteData[`detailContent${currentActiveDetailId}`];
-            }
-        }
-
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            updateEditModeUI();
-        }
-
-        function updateEditModeUI() {
-            const btn = document.getElementById('toggleEditBtn');
-            const body = document.body;
-            
-            if (isEditMode) {
-                btn.innerHTML = '<div class="w-8 h-8 rounded-full bg-poe-gold flex items-center justify-center text-black shadow-[0_0_10px_rgba(212,175,55,0.5)]"><i class="fas fa-unlock text-sm"></i></div><span class="text-poe-gold font-medium tracking-wide">โหมดแก้ไข</span>';
-                btn.classList.add('border-poe-gold', 'bg-poe-gold/10');
-                body.classList.add('edit-mode-active');
-                
-                const hint = document.getElementById('detailEditHint');
-                if(hint) hint.innerHTML = "<span class='text-poe-gold font-medium'>[โหมดแก้ไข] คลิกที่ข้อความด้านบนเพื่อแก้ไขรายละเอียด</span>";
-                
-            } else {
-                btn.innerHTML = '<div class="w-8 h-8 rounded-full bg-poe-bg flex items-center justify-center group-hover:bg-poe-gold group-hover:text-black transition-colors"><i class="fas fa-lock text-sm"></i></div><span class="text-sm font-medium tracking-wide">โหมดผู้ชม</span>';
-                btn.classList.remove('border-poe-gold', 'bg-poe-gold/10');
-                body.classList.remove('edit-mode-active');
-                
-                const hint = document.getElementById('detailEditHint');
-                if(hint) hint.innerHTML = "หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าที่แสดงในหน้าหลัก";
-            }
-        }
-
         function openDetailView(id) {
-            currentActiveDetailId = id;
-            
             const colorLine = document.getElementById('detailColorLine');
             if(id === 1) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-gold shadow-[0_0_20px_#d4af37]"; }
             else if(id === 2) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-blue shadow-[0_0_20px_#4a90e2]"; }
@@ -519,131 +330,13 @@
             
             setTimeout(() => {
                 modal.classList.add('hidden');
-                currentActiveDetailId = null;
             }, 300);
         }
 
-        function openEditor(keyContext) {
-            if (!isEditMode) return; 
-            
-            if(event) event.stopPropagation(); 
-
-            let actualKey = keyContext;
-            
-            if (keyContext === 'detailTitle' && currentActiveDetailId !== null) {
-                actualKey = `detailTitle${currentActiveDetailId}`;
-            } else if (keyContext === 'detailContent' && currentActiveDetailId !== null) {
-                actualKey = `detailContent${currentActiveDetailId}`;
-            }
-            
-            const modal = document.getElementById('editModal');
-            const modalContent = document.getElementById('editModalContent');
-            const textarea = document.getElementById('editorTextarea');
-            const keyInput = document.getElementById('currentEditKey');
-            const modalTitle = document.getElementById('modalTitle');
-
-            let titleText = '<i class="fas fa-pen-nib text-sm"></i> แก้ไขข้อมูล';
-            if(actualKey === 'mainTitle') titleText = '<i class="fas fa-heading text-sm"></i> แก้ไขหัวข้อหลัก';
-            else if(actualKey.includes('detailTitle')) titleText = `<i class="fas fa-font text-sm"></i> แก้ไขหัวข้อย่อยบริการที่ ${currentActiveDetailId}`;
-            else if(actualKey.includes('detailContent')) titleText = `<i class="fas fa-list-alt text-sm"></i> แก้ไขรายละเอียดบริการที่ ${currentActiveDetailId}`;
-            else if(actualKey === 'merchantId') titleText = '<i class="fas fa-id-badge text-sm"></i> แก้ไขรหัสพ่อค้า';
-            else titleText = `<i class="fas fa-edit text-sm"></i> แก้ไข: ${actualKey}`;
-            
-            modalTitle.innerHTML = titleText;
-            textarea.value = siteData[actualKey] || '';
-            keyInput.value = actualKey;
-
-            if(currentActiveDetailId !== null) {
-                 document.getElementById('detailModal').style.zIndex = '50';
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-            textarea.focus();
-        }
-
-        function closeEditor() {
-            const modal = document.getElementById('editModal');
-            const modalContent = document.getElementById('editModalContent');
-            
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                if(currentActiveDetailId !== null) {
-                     document.getElementById('detailModal').style.zIndex = '60';
-                }
-            }, 300);
-        }
-
-        function saveEdit() {
-            const key = document.getElementById('currentEditKey').value;
-            const content = document.getElementById('editorTextarea').value;
-            
-            if (key) {
-                siteData[key] = content;
-                saveData();
-                renderAll();
-                closeEditor();
-                
-                let displayElId = `${key}-display`;
-                if(key.includes('detailTitle')) displayElId = 'detailTitle-display';
-                if(key.includes('detailContent')) displayElId = 'detailContent-display';
-                
-                const displayEl = document.getElementById(displayElId);
-                if(displayEl) {
-                    const originalBorder = displayEl.style.borderColor;
-                    displayEl.style.transition = 'all 0.5s';
-                    displayEl.style.borderColor = '#4ade80'; // Green success flash
-                    displayEl.style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.4)';
-                    
-                    setTimeout(() => {
-                        displayEl.style.borderColor = originalBorder;
-                        displayEl.style.boxShadow = '';
-                    }, 1000);
-                }
-            }
-        }
-
-        function insertTag(openTag, closeTag) {
-            const textarea = document.getElementById('editorTextarea');
-            const startPos = textarea.selectionStart;
-            const endPos = textarea.selectionEnd;
-            const selectedText = textarea.value.substring(startPos, endPos);
-            
-            const replacement = openTag + selectedText + closeTag;
-            textarea.value = textarea.value.substring(0, startPos) + replacement + textarea.value.substring(endPos);
-            
-            textarea.focus();
-            if(selectedText.length === 0 && closeTag.length > 0) {
-                textarea.selectionStart = startPos + openTag.length;
-                textarea.selectionEnd = startPos + openTag.length;
-            } else {
-                 textarea.selectionStart = startPos + replacement.length;
-                 textarea.selectionEnd = startPos + replacement.length;
-            }
-        }
-
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) closeEditor();
-        });
-        
+        // Close modal when clicking outside
         document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this && !isEditMode) closeDetailView();
-            if (e.target === this && isEditMode) {
-                 if(confirm('ต้องการปิดหน้าต่างรายละเอียดหรือไม่? (ข้อมูลที่ยังไม่บันทึกจะหายไป)')) {
-                     closeDetailView();
-                 }
-            }
+            if (e.target === this) closeDetailView();
         });
-
-        window.onload = init;
     </script>
 </body>
 </html>
