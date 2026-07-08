@@ -24,6 +24,7 @@
                             gold_dim: '#8a7322',
                             blue: '#4a90e2',
                             red: '#cc3333',
+                            purple: '#a335ee', // Added purple for the 4th service
                             text: '#e0e0e0',
                             text_muted: '#8a8a9e'
                         }
@@ -98,6 +99,7 @@
         .service-card.card-gold:hover { border-color: #d4af37; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.15); }
         .service-card.card-blue:hover { border-color: #4a90e2; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(74, 144, 226, 0.15); }
         .service-card.card-red:hover { border-color: #cc3333; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(204, 51, 51, 0.15); }
+        .service-card.card-purple:hover { border-color: #a335ee; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(163, 53, 238, 0.15); } /* Added for card 4 */
 
         .title-plate {
             background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.1) 50%, transparent 100%);
@@ -137,7 +139,7 @@
     <div class="fixed top-0 right-0 w-[800px] h-[800px] ambient-light-blue translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"></div>
     <div class="fixed bottom-0 left-1/2 w-[1000px] h-[600px] ambient-light-gold -translate-x-1/2 translate-y-1/2 pointer-events-none z-0"></div>
 
-    <div class="container mx-auto px-4 py-12 flex-grow flex flex-col items-center justify-center max-w-6xl relative z-10">
+    <div class="container mx-auto px-4 py-12 flex-grow flex flex-col items-center justify-center max-w-7xl relative z-10">
         
         <!-- Header Section -->
         <div class="text-center mb-16 w-full animate-float">
@@ -159,8 +161,8 @@
             </div>
         </div>
 
-        <!-- Services Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full z-10">
+        <!-- Services Grid (Updated to 4 columns for large screens, 2x2 for medium) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8 w-full z-10">
             
             <!-- Service 1: Campaign -->
             <div class="glass-panel service-card card-gold rounded-xl flex flex-col h-full cursor-pointer group" onclick="openDetailView(1)">
@@ -234,6 +236,30 @@
                 </div>
             </div>
 
+            <!-- Service 4: Leveling & Atlas -->
+            <div class="glass-panel service-card card-purple rounded-xl flex flex-col h-full cursor-pointer group" onclick="openDetailView(4)">
+                <div class="h-1 w-full bg-gradient-to-r from-transparent via-poe-purple to-transparent opacity-50 group-hover:opacity-100 transition-opacity rounded-t-xl"></div>
+                <div class="p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-9xl text-poe-purple opacity-[0.03] group-hover:opacity-[0.08] transition-opacity font-bold pointer-events-none">4</div>
+
+                    <div class="text-center border-b border-poe-border/50 pb-5 mb-6 z-10">
+                         <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#f3e6fa] to-[#a335ee] tracking-wide">4. พาเวล 60-90<br>& เก็บแต้ม Atlas</h3>
+                    </div>
+                    <div class="flex-grow flex flex-col items-center justify-center z-10 w-full">
+                         <div class="flex justify-center items-center mb-6">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-poe-purple/30 blur-md rounded-full w-24 h-24 -left-4 -top-4"></div>
+                                <i class="fas fa-angle-double-up text-poe-purple text-6xl relative z-10 hover:scale-110 transition-transform drop-shadow-[0_0_15px_rgba(163,53,238,0.6)]"></i>
+                            </div>
+                        </div>
+                        <div class="text-center px-4"><span class="bg-poe-purple/10 text-poe-purple px-3 py-1 rounded-full text-sm font-medium border border-poe-purple/20">Level & Atlas</span></div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-poe-border/30 text-center text-sm text-poe-purple/60 uppercase tracking-widest font-semibold group-hover:text-poe-purple transition-colors z-10">
+                        รายละเอียดเพิ่มเติม <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Merchant ID Footer -->
@@ -279,36 +305,181 @@
                     <!-- Extensive details injected here -->
                 </div>
                 
-                <div class="mt-8 pt-6 border-t border-gray-800/50 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
-                    <i class="fas fa-info-circle"></i> 
-                    <span>หากต้องการติดต่อ กรุณาแจ้งรหัสพ่อค้าที่แสดงในหน้าหลัก</span>
+                <div class="mt-8 pt-6 border-t border-gray-800/50 text-center text-base text-gray-300 flex items-center justify-center gap-3">
+                    <i class="fab fa-facebook text-[#1877F2] text-xl"></i> 
+                    <span class="font-medium tracking-wide">siravit homsuwan</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Data for Detail Views
+        // Data for Detail Views (Updated with template literals for better multi-line formatting)
         const siteData = {
-            detailTitle1: '<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-gold to-yellow-200">รายละเอียด: วิ่ง Act 1 - 4 & Interlude</h2>',
-            detailContent1: '<div class="space-y-6 text-lg text-gray-300 leading-relaxed">\n  <div class="bg-[#1a1a20] p-6 rounded-lg border border-gray-700/50">\n      <h3 class="text-poe-gold font-bold text-xl mb-4 flex items-center gap-2"><i class="fas fa-gift"></i> รายละเอียดที่ท่านจะได้รับ:</h3>\n      <ul class="space-y-3">\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ตัวละครเลเวล 60+</span></li>\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>พลังวิญญาณ (Spirit) 100</span></li>\n        <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ทำเควสเนื้อเรื่อง (Campaign) ครบทุก Act (1-4) และ Interlude (1-3)</span></li>\n      </ul>\n  </div>\n  \n  <div class="flex items-center gap-3 text-gray-400 bg-black/30 p-4 rounded-lg border-l-4 border-gray-600">\n      <i class="far fa-clock text-xl"></i>\n      <p><b>ระยะเวลาดำเนินการ:</b> ประมาณ 3-5 ชั่วโมง</p>\n  </div>\n\n  <div class="bg-gradient-to-r from-[#2a2416] to-transparent p-6 rounded-lg border-l-4 border-poe-gold">\n      <h3 class="text-poe-gold font-bold text-xl mb-3">ค่าบริการ:</h3>\n      <ul class="space-y-2 font-medium">\n        <li class="flex justify-between max-w-xs"><span>• แบบเดินตาม</span> <span class="text-white">590 บาท</span></li>\n        <li class="flex justify-between max-w-xs"><span>• แบบฝากไอดี</span> <span class="text-white">890 บาท</span></li>\n      </ul>\n  </div>\n</div>',
+            detailTitle1: `<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-gold to-yellow-200">รายละเอียด: วิ่ง Act 1 - 4 & Interlude</h2>`,
+            detailContent1: `
+                <div class="space-y-6 text-lg text-gray-300 leading-relaxed">
+                    <div class="bg-[#1a1a20] p-6 rounded-lg border border-gray-700/50">
+                        <h3 class="text-poe-gold font-bold text-xl mb-4 flex items-center gap-2"><i class="fas fa-gift"></i> รายละเอียดที่ท่านจะได้รับ:</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ตัวละครเลเวล 60+</span></li>
+                            <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>พลังวิญญาณ (Spirit) 100</span></li>
+                            <li class="flex items-start gap-3"><i class="fas fa-caret-right text-poe-gold mt-1"></i> <span>ทำเควสเนื้อเรื่อง (Campaign) ครบทุก Act (1-4) และ Interlude (1-3)</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 text-gray-400 bg-black/30 p-4 rounded-lg border-l-4 border-gray-600">
+                        <i class="far fa-clock text-xl"></i>
+                        <p><b>ระยะเวลาดำเนินการ:</b> ประมาณ 3-5 ชั่วโมง</p>
+                    </div>
 
-            detailTitle2: '<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-blue to-blue-200">รายละเอียด: ปลดแต้ม Skill Points 1-8</h2>',
-            detailContent2: '<div class="space-y-6 text-lg text-gray-300">\n  <div class="flex justify-center mb-8 relative">\n    <div class="absolute inset-0 bg-poe-blue/20 blur-[50px] rounded-full w-32 h-32 mx-auto"></div>\n    <i class="fas fa-book-journal-whills text-7xl text-poe-blue relative z-10 drop-shadow-[0_0_15px_rgba(74,144,226,0.8)] animate-float"></i>\n  </div>\n  \n  <div class="bg-gradient-to-r from-[#162032] to-transparent p-6 rounded-lg border-l-4 border-poe-blue">\n      <h3 class="text-poe-blue font-bold text-xl mb-4">ค่าบริการ:</h3>\n      <div class="grid gap-4">\n        <div class="bg-black/40 p-4 rounded border border-gray-700 flex justify-between items-center">\n            <div>\n                <span class="text-white font-bold text-xl">20 บาท</span>\n                <p class="text-sm text-gray-400">ใช้เวลาวิ่ง 20 นาที +</p>\n            </div>\n            <i class="fas fa-walking text-2xl text-gray-500"></i>\n        </div>\n        <div class="bg-black/40 p-4 rounded border border-poe-blue/30 flex justify-between items-center">\n            <div>\n                <span class="text-white font-bold text-xl">40 บาท</span>\n                <p class="text-sm text-poe-blue">ใช้เวลาวิ่งด่วน 5 นาที!</p>\n            </div>\n            <i class="fas fa-bolt text-2xl text-poe-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"></i>\n        </div>\n      </div>\n  </div>\n  \n  <div class="bg-red-900/20 border border-red-900/50 p-5 rounded-lg flex gap-4 items-start">\n      <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>\n      <p class="text-sm"><b class="text-red-400">เงื่อนไขสำคัญ:</b> ตัวละครต้องผ่าน Act 2 และผ่านเควส <span class="text-white font-medium">"ทางผ่านผู้ทรยศ"</span> แล้ว จึงจะลงแต้ม 8 ได้</p>\n  </div>\n</div>',
+                    <div class="bg-gradient-to-r from-[#2a2416] to-transparent p-6 rounded-lg border-l-4 border-poe-gold">
+                        <h3 class="text-poe-gold font-bold text-xl mb-3">ค่าบริการ:</h3>
+                        <ul class="space-y-2 font-medium">
+                            <li class="flex justify-between max-w-xs"><span>• แบบเดินตาม</span> <span class="text-white">590 บาท</span></li>
+                            <li class="flex justify-between max-w-xs"><span>• แบบฝากไอดี</span> <span class="text-white">890 บาท</span></li>
+                        </ul>
+                    </div>
+                </div>`,
 
-            detailTitle3: '<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-red to-red-300">รายละเอียด: จัดบิ้วตามงบประมาณ</h2>',
-            detailContent3: '<div class="space-y-6 text-lg text-gray-300">\n  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-comments text-3xl text-poe-blue mb-3"></i>\n          <h4 class="font-bold text-white">ให้คำปรึกษา ฟรี</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-tools text-3xl text-poe-gold mb-3"></i>\n          <h4 class="font-bold text-white">รับแก้บิ้ว</h4>\n      </div>\n      <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">\n          <i class="fas fa-shield-heart text-3xl text-poe-red mb-3"></i>\n          <h4 class="font-bold text-white">ดูแลตลอดการใช้งาน</h4>\n      </div>\n  </div>\n\n  <div class="bg-gradient-to-b from-[#2a1616] to-[#150b0b] p-8 border border-poe-red/30 rounded-xl text-center shadow-[0_0_30px_rgba(204,51,51,0.15)] relative overflow-hidden">\n      <div class="absolute -right-4 -bottom-4 text-poe-red/10 text-9xl"><i class="fas fa-fire"></i></div>\n      <h3 class="text-gray-400 mb-2 relative z-10">ค่าบริการเริ่มต้นเพียง</h3>\n      <div class="text-5xl font-bold text-white relative z-10 mb-2">300 <span class="text-2xl text-poe-gold">บาท</span></div>\n      <p class="text-sm text-poe-red/80 relative z-10"></p>\n  </div>\n</div>'
+            detailTitle2: `<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-blue to-blue-200">รายละเอียด: ปลดแต้ม Skill Points 1-8</h2>`,
+            detailContent2: `
+                <div class="space-y-6 text-lg text-gray-300">
+                    <div class="flex justify-center mb-8 relative">
+                        <div class="absolute inset-0 bg-poe-blue/20 blur-[50px] rounded-full w-32 h-32 mx-auto"></div>
+                        <i class="fas fa-book-journal-whills text-7xl text-poe-blue relative z-10 drop-shadow-[0_0_15px_rgba(74,144,226,0.8)] animate-float"></i>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-[#162032] to-transparent p-6 rounded-lg border-l-4 border-poe-blue">
+                        <h3 class="text-poe-blue font-bold text-xl mb-4">ค่าบริการ:</h3>
+                        <div class="grid gap-4">
+                            <div class="bg-black/40 p-4 rounded border border-gray-700 flex justify-between items-center">
+                                <div>
+                                    <span class="text-white font-bold text-xl">20 บาท</span>
+                                    <p class="text-sm text-gray-400">ใช้เวลาวิ่ง 20 นาที +</p>
+                                </div>
+                                <i class="fas fa-walking text-2xl text-gray-500"></i>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded border border-poe-blue/30 flex justify-between items-center">
+                                <div>
+                                    <span class="text-white font-bold text-xl">40 บาท</span>
+                                    <p class="text-sm text-poe-blue">ใช้เวลาวิ่งด่วน 5 นาที!</p>
+                                </div>
+                                <i class="fas fa-bolt text-2xl text-poe-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-900/20 border border-red-900/50 p-5 rounded-lg flex gap-4 items-start">
+                        <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                        <p class="text-sm"><b class="text-red-400">เงื่อนไขสำคัญ:</b> ตัวละครต้องผ่าน Act 2 และผ่านเควส <span class="text-white font-medium">"ทางผ่านผู้ทรยศ"</span> แล้ว จึงจะลงแต้ม 8 ได้</p>
+                    </div>
+                </div>`,
+
+            detailTitle3: `<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-red to-red-300">รายละเอียด: จัดบิ้วตามงบประมาณ</h2>`,
+            detailContent3: `
+                <div class="space-y-6 text-lg text-gray-300">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">
+                            <i class="fas fa-comments text-3xl text-poe-blue mb-3"></i>
+                            <h4 class="font-bold text-white">ให้คำปรึกษา ฟรี</h4>
+                        </div>
+                        <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">
+                            <i class="fas fa-tools text-3xl text-poe-gold mb-3"></i>
+                            <h4 class="font-bold text-white">รับแก้บิ้ว</h4>
+                        </div>
+                        <div class="bg-[#1a1a20] border border-gray-700 p-4 rounded-lg text-center">
+                            <i class="fas fa-shield-heart text-3xl text-poe-red mb-3"></i>
+                            <h4 class="font-bold text-white">ดูแลตลอดการใช้งาน</h4>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-b from-[#2a1616] to-[#150b0b] p-8 border border-poe-red/30 rounded-xl text-center shadow-[0_0_30px_rgba(204,51,51,0.15)] relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 text-poe-red/10 text-9xl"><i class="fas fa-fire"></i></div>
+                        <h3 class="text-gray-400 mb-2 relative z-10">ค่าบริการเริ่มต้นเพียง</h3>
+                        <div class="text-5xl font-bold text-white relative z-10 mb-2">300 <span class="text-2xl text-poe-gold">บาท</span></div>
+                        <p class="text-sm text-poe-red/80 relative z-10"></p>
+                    </div>
+                </div>`,
+                
+            // New Data for Service 4
+            detailTitle4: `<h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-poe-purple to-purple-300">รายละเอียด: พาเวล & เก็บแต้ม Atlas</h2>`,
+            detailContent4: `
+                <div class="space-y-8 text-lg text-gray-300">
+                    
+                    <!-- Section: Leveling -->
+                    <div class="bg-gradient-to-r from-[#1f1624] to-transparent p-6 rounded-xl border-l-4 border-poe-purple shadow-lg">
+                        <h3 class="text-poe-purple font-bold text-2xl mb-5 flex items-center gap-3">
+                            <i class="fas fa-angle-double-up"></i> บริการพาเวล (Leveling)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center bg-black/40 p-4 rounded border border-gray-800 hover:border-poe-purple/30 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-caret-right text-gray-500"></i>
+                                    <span class="font-medium text-gray-200">เวล 60 - 84</span>
+                                </div>
+                                <span class="text-white font-bold bg-poe-purple/10 border border-poe-purple/20 px-4 py-1 rounded">200 บาท</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center bg-black/40 p-4 rounded border border-gray-800 hover:border-poe-purple/30 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-caret-right text-gray-500"></i>
+                                    <span class="font-medium text-gray-200">เวล 84 - 90</span>
+                                </div>
+                                <span class="text-white font-bold bg-poe-purple/10 border border-poe-purple/20 px-4 py-1 rounded">200 บาท</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center bg-poe-purple/10 p-4 rounded border border-poe-purple/40 shadow-[0_0_15px_rgba(163,53,238,0.1)]">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-star text-poe-purple"></i>
+                                    <span class="font-bold text-poe-purple">เวล 60 - 90 <span class="text-xs text-gray-400 font-normal ml-2">(แพ็คเกจสุดคุ้ม)</span></span>
+                                </div>
+                                <span class="text-white font-bold bg-poe-purple px-5 py-1.5 rounded shadow-[0_0_10px_rgba(163,53,238,0.4)]">300 บาท</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Atlas -->
+                    <div class="bg-gradient-to-r from-[#2a2416] to-transparent p-6 rounded-xl border-l-4 border-poe-gold shadow-lg">
+                        <h3 class="text-poe-gold font-bold text-2xl mb-5 flex items-center gap-3">
+                            <i class="fas fa-globe"></i> บริการเก็บแต้ม Atlas
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/40 p-5 rounded border border-poe-gold/40 shadow-inner">
+                                <div>
+                                    <span class="block font-bold text-white text-xl mb-1">เก็บแต้ม Atlas 336 แต้ม</span>
+                                    <span class="text-sm text-gray-400"><i class="fas fa-check-circle text-poe-gold/70 mr-1"></i> เหมาจ่ายครบจบทุกแต้มบนบอร์ด</span>
+                                </div>
+                                <span class="text-white font-bold text-xl bg-poe-gold/20 border border-poe-gold/50 px-5 py-2 rounded shadow-[0_0_15px_rgba(212,175,55,0.2)]">500 บาท</span>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/40 p-4 rounded border border-gray-800">
+                                <div>
+                                    <span class="block font-medium text-gray-200">เก็บแต้ม แยกตาม Content</span>
+                                    <span class="text-sm text-gray-500">เลือกทำเฉพาะสายที่ต้องการฟาร์ม</span>
+                                </div>
+                                <span class="text-gray-200 font-medium bg-gray-800 px-4 py-1.5 rounded">Content ละ <span class="text-poe-gold font-bold ml-1">200 บาท</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>`
         };
 
         function openDetailView(id) {
             const colorLine = document.getElementById('detailColorLine');
+            
+            // Set decorative line color based on service
             if(id === 1) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-gold shadow-[0_0_20px_#d4af37]"; }
             else if(id === 2) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-blue shadow-[0_0_20px_#4a90e2]"; }
             else if(id === 3) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-red shadow-[0_0_20px_#cc3333]"; }
+            else if(id === 4) { colorLine.className = "absolute top-0 left-0 right-0 h-1.5 bg-poe-purple shadow-[0_0_20px_#a335ee]"; } // Added condition for ID 4
 
+            // Inject Content
             document.getElementById('detailTitle-display').innerHTML = siteData[`detailTitle${id}`];
             document.getElementById('detailContent-display').innerHTML = siteData[`detailContent${id}`];
 
+            // Animate Modal In
             const modal = document.getElementById('detailModal');
             const modalContent = document.getElementById('detailModalContent');
             
